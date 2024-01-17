@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Chat</title>
+</head>
+<body>
+  <div>
+    <label for="messageInput">Message:</label>
+    <input type="text" id="messageInput">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+  <br>
+  <br>
+  <div>
+    <label for="privateMsg">Private Message to UserID:</label>
+    <input type="text" id="privateMsg">
+    <br>
+    <label for="PrivateUserID">Private Message to UserID:</label>
+    <input type="text" id="PrivateUserID">
+    <button onclick="sendPrivateMessage()">Send Private Message</button>
+  </div>
+  <div id="chatOutput"></div>
+
+  <script>
+    const socket = new WebSocket('ws://localhost:3000');
+
+    // Event listener for when the connection is established
+    socket.addEventListener('open', (event) => {
+      console.log('Connected to the server');
+    });
+
+    // Event listener for receiving messages from the server
+    socket.addEventListener('message', (event) => {
+      const chatOutput = document.getElementById('chatOutput');
+      chatOutput.innerHTML += `<p>${event.data}</p><br>`;
+    });
+
+    // Function to send a message to the server
+    function sendMessage() {
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value;
+
+      // Send the message to the server
+      socket.send(message);
+
+      // Clear the input field
+      messageInput.value = '';
+    }
+
+    // Function to send a private message to the server
+
+    function sendPrivateMessage() {
+      const privateMessageInput = document.getElementById('privateMsg');
+      const privateMessage = privateMessageInput.value;
+
+      const privateUserIdInput = document.getElementById('PrivateUserID');
+      const privateUserId = privateUserIdInput.value;
+
+
+      // Send the private message to the server
+      socket.send(`/msg ${privateUserId} ${privateMessage}`);
+
+      // Clear the input field
+      privateMessageInput.value = '';
+    }
+  </script>
+</body>
+</html>
