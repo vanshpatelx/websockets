@@ -13,6 +13,7 @@ socket.on('connection', (socket) => {
         clients.forEach(client => {
             client.send(`${client._socket.remoteAddress} says: ${message}`);
         });
+        console.log('' + message);
     });
     socket.on('close', () => {
         console.log('Client disconnected');
